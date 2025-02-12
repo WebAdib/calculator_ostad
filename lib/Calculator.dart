@@ -136,7 +136,7 @@ class _CalculatorState extends State<Calculator> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        CalculatorButton(btnText: '^'),
+                        CalculatorButton(btnText: '√'),
                         CalculatorButton(btnText: '0'),
                         CalculatorButton(btnText: '.'),
                         CalculatorButton(

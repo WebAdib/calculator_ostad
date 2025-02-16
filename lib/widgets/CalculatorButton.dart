@@ -1,35 +1,33 @@
 import 'package:flutter/material.dart';
 
-import 'Colors.dart';
-
 class CalculatorButton extends StatelessWidget {
-  String btnText;
-  Color? btnColor;
-  CalculatorButton({
-    super.key,
+  final String btnText;
+  final Color? btnColor;
+  final VoidCallback onTap;
+
+  const CalculatorButton({
+    Key? key,
     required this.btnText,
     this.btnColor,
-  });
+    required this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: SizedBox(
-        width: 65, // Set equal width and height
-        height: 65,
-        child: ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            backgroundColor: btnColor ?? Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(500), // High radius for a circle
-            ),
-          ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.all(8),
+        height: 70,
+        width: 70,
+        decoration: BoxDecoration(
+          color: btnColor ?? Colors.grey[800],
+          borderRadius: BorderRadius.circular(100),
+        ),
+        child: Center(
           child: Text(
             btnText,
-            style: TextStyle(fontSize: 30, color: Colors.white),
+            style: const TextStyle(fontSize: 30, color: Colors.white),
           ),
         ),
       ),

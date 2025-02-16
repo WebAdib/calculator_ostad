@@ -22,35 +22,48 @@ void buttonPressed(
     if (input.isNotEmpty) {
       input = input.substring(0, input.length - 1);
     }
+  } else if (buttonText == "√") {
+    // Allow √ only at the beginning or after an operator
+    if (input.isEmpty || "+–×÷%".contains(input[input.length - 1])) {
+      input += "√";
+    }
   } else if (["+", "–", "×", "÷", "%"].contains(buttonText)) {
     // Store first number and operand
     if (input.isNotEmpty && operand.isEmpty) {
-      previousNumber = double.parse(input);
+      previousNumber = parseNumber(input);
       operand = buttonText;
-      input += buttonText; // Append operand without spaces
-      output = ""; // Clear output until second number is entered
+      input += buttonText;
+      output = ""; // Clear output until next number is entered
     }
   } else if (buttonText == "=") {
-    // Perform calculation
+    // Ensure calculation only happens if there is an operand
     if (operand.isNotEmpty) {
       try {
-        String secondPart =
-            input.split(RegExp(r'[+–×÷%]'))[1]; // Get second number
-        currentNumber = double.parse(secondPart);
+        // Extract second number from input after the operand
+        String secondPart = input.split(RegExp(r'[+–×÷%]'))[1];
+
+        currentNumber = parseNumber(secondPart);
         output = calculateResult(operand, previousNumber, currentNumber);
-        input = output; // Sync input with output
+        input = output; // Make input = output
         previousNumber = double.tryParse(output) ?? 0.0;
         operand = "";
       } catch (e) {
         output = "Error";
       }
+    } else if (input.contains("√")) {
+      // Handle case where "=" is pressed after a square root operation
+      output = parseNumber(input).toString();
+      input = output; // Sync input with output
     }
   } else {
     // Append numbers and decimals
     input += buttonText;
 
-    // Auto-update output if an operand exists
-    if (operand.isNotEmpty) {
+    // Auto-update output when a number follows √
+    if (input.contains("√") && !input.contains(RegExp(r'[+–×÷%]'))) {
+      double rootValue = parseNumber(input);
+      output = rootValue.toString();
+    } else if (operand.isNotEmpty) {
       try {
         String secondPart =
             input.split(RegExp(r'[+–×÷%]'))[1]; // Get second number
@@ -64,6 +77,17 @@ void buttonPressed(
 
   // Update the UI
   setStateCallback(input, output, operand, previousNumber, currentNumber);
+}
+
+// Function to parse numbers, including square root handling
+double parseNumber(String input) {
+  if (input.contains("√")) {
+    String numStr = input.replaceAll("√", ""); // Remove √ to get the number
+    double num = double.tryParse(numStr) ?? 0.0;
+    return sqrt(num); // Return square root
+  } else {
+    return double.tryParse(input) ?? 0.0;
+  }
 }
 
 String calculateResult(

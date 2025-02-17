@@ -18,6 +18,7 @@ class _CalculatorState extends State<Calculator> {
   String _operand = "";
   double _currentNumber = 0.0;
   double _previousNumber = 0.0;
+  bool _showCalculatorText = true; // Add this variable
 
   void updateState(String input, String output, String operand,
       double previousNumber, double currentNumber) {
@@ -27,6 +28,7 @@ class _CalculatorState extends State<Calculator> {
       _operand = operand;
       _previousNumber = previousNumber;
       _currentNumber = currentNumber;
+      _showCalculatorText = input.isEmpty; // Hide text if input is not empty
     });
   }
 
@@ -45,23 +47,25 @@ class _CalculatorState extends State<Calculator> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        "Calculator",
-                        style: TextStyle(
-                            fontSize: screenWidth * 0.15,
-                            color: AppColors.myGray),
-                      ),
-                    ],
+                  AnimatedOpacity(
+                    opacity: _showCalculatorText ? 1.0 : 0.0, // Animate opacity
+                    duration: Duration(milliseconds: 180), // Animation speed
+                    child: Row(
+                      children: [
+                        Text(
+                          "Calculator",
+                          style: TextStyle(
+                              fontSize: screenWidth * 0.15,
+                              color: AppColors.myGray),
+                        ),
+                      ],
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        _input.isEmpty
-                            ? "0"
-                            : _input, // Show input numbers & operators
+                        _input.isEmpty ? "0" : _input, // Show input numbers
                         style: TextStyle(
                             fontSize: screenWidth * 0.15, color: Colors.white),
                       ),

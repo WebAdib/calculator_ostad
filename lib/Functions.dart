@@ -12,56 +12,49 @@ void buttonPressed(
   double previousNumber,
   double currentNumber,
 ) {
+  bool showCalculatorText = false; // Hide text when any button is clicked
+
   if (buttonText == "C") {
-    // Clear everything
     input = "";
     output = "0";
     previousNumber = 0.0;
     currentNumber = 0.0;
     operand = "";
+    showCalculatorText = true; // Show text again when "C" is clicked
   } else if (buttonText == "A") {
-    // Delete last character
     if (input.isNotEmpty) {
       input = input.substring(0, input.length - 1);
     }
   } else if (buttonText == "√") {
-    // Allow √ only at the beginning or after an operator
     if (input.isEmpty || "+–×÷%".contains(input[input.length - 1])) {
       input += "√";
     }
   } else if (["+", "–", "×", "÷", "%"].contains(buttonText)) {
-    // Store first number and operand
     if (input.isNotEmpty && operand.isEmpty) {
       previousNumber = parseNumber(input);
       operand = buttonText;
       input += buttonText;
-      output = ""; // Clear output until next number is entered
+      output = "";
     }
   } else if (buttonText == "=") {
-    // Ensure calculation only happens if there is an operand
     if (operand.isNotEmpty) {
       try {
-        // Extract second number from input after the operand
         String secondPart = input.split(RegExp(r'[+–×÷%]'))[1];
-
         currentNumber = parseNumber(secondPart);
         output = calculateResult(operand, previousNumber, currentNumber);
-        input = output; // Make input = output
+        input = output;
         previousNumber = double.tryParse(output) ?? 0.0;
         operand = "";
       } catch (e) {
         output = "Error";
       }
     } else if (input.contains("√")) {
-      // Handle case where "=" is pressed after a square root operation
       output = parseNumber(input).toString();
-      input = output; // Sync input with output
+      input = output;
     }
   } else {
-    // Append numbers and decimals
     input += buttonText;
 
-    // Auto-update output when a number follows √
     if (input.contains("√") && !input.contains(RegExp(r'[+–×÷%]'))) {
       double rootValue = parseNumber(input);
       output = rootValue.toString();
@@ -77,7 +70,6 @@ void buttonPressed(
     }
   }
 
-  // Update the UI
   setStateCallback(input, output, operand, previousNumber, currentNumber);
 }
 

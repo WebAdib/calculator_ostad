@@ -115,6 +115,9 @@ String calculateResult(
   if (result % 1 == 0) {
     return result.toInt().toString(); // Convert to integer if no decimal part
   } else {
-    return result.toString(); // Keep as double otherwise
+    return result
+        .toStringAsFixed(9)
+        .replaceFirst(RegExp(r'0*$'), '')
+        .replaceFirst(RegExp(r'\.$'), ''); // Keep as double otherwise
   }
 }

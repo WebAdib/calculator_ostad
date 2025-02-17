@@ -120,11 +120,11 @@ class _CalculatorState extends State<Calculator> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  buildButtonRow(["A", "C", "%", "÷"], AppColors.mybtnColor1),
-                  buildButtonRow(["7", "8", "9", "×"], AppColors.mybtnColor1),
-                  buildButtonRow(["4", "5", "6", "–"], AppColors.mybtnColor1),
-                  buildButtonRow(["1", "2", "3", "+"], AppColors.mybtnColor1),
-                  buildButtonRow(["√", "0", ".", "="], AppColors.mybtnColor2),
+                  buildButtonRow(["A", "C", "%", "÷"]),
+                  buildButtonRow(["7", "8", "9", "×"]),
+                  buildButtonRow(["4", "5", "6", "–"]),
+                  buildButtonRow(["1", "2", "3", "+"]),
+                  buildButtonRow(["√", "0", ".", "="]),
                 ],
               ),
             ),
@@ -134,19 +134,28 @@ class _CalculatorState extends State<Calculator> {
     );
   }
 
-  Widget buildButtonRow(List<String> buttons, Color? color) {
+  Widget buildButtonRow(List<String> buttons) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: buttons
-          .map(
-            (btnText) => CalculatorButton(
-              btnText: btnText,
-              btnColor: btnText == "=" ? AppColors.mybtnColor2 : color,
-              onTap: () => buttonPressed(btnText, updateState, _input, _output,
-                  _operand, _previousNumber, _currentNumber, btnText == "="),
-            ),
-          )
-          .toList(),
+      children: buttons.map(
+        (btnText) {
+          Color btnColor;
+          if (["÷", "×", "–", "+"].contains(btnText)) {
+            btnColor = AppColors.mybtnColor1; // Operators
+          } else if (btnText == "=") {
+            btnColor = AppColors.mybtnColor2; // Equals button
+          } else {
+            btnColor = Colors.black; // Other buttons
+          }
+
+          return CalculatorButton(
+            btnText: btnText,
+            btnColor: btnColor,
+            onTap: () => buttonPressed(btnText, updateState, _input, _output,
+                _operand, _previousNumber, _currentNumber, btnText == "="),
+          );
+        },
+      ).toList(),
     );
   }
 }

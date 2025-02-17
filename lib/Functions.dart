@@ -1,5 +1,3 @@
-// This is Function.dart page
-
 import 'dart:math';
 import 'package:flutter/material.dart';
 
@@ -11,8 +9,10 @@ void buttonPressed(
   String operand,
   double previousNumber,
   double currentNumber,
+  bool isResult, // Track if '=' is pressed
 ) {
-  bool showCalculatorText = false; // Hide text when any button is clicked
+  bool showCalculatorText =
+      false; // Hide "Calculator" when any button is clicked
 
   if (buttonText == "C") {
     input = "";
@@ -21,6 +21,7 @@ void buttonPressed(
     currentNumber = 0.0;
     operand = "";
     showCalculatorText = true; // Show text again when "C" is clicked
+    isResult = false; // Reset result state
   } else if (buttonText == "A") {
     if (input.isNotEmpty) {
       input = input.substring(0, input.length - 1);
@@ -42,15 +43,17 @@ void buttonPressed(
         String secondPart = input.split(RegExp(r'[+–×÷%]'))[1];
         currentNumber = parseNumber(secondPart);
         output = calculateResult(operand, previousNumber, currentNumber);
-        input = output;
+        input = input;
         previousNumber = double.tryParse(output) ?? 0.0;
         operand = "";
+        isResult = true; // Set flag to true when "=" is pressed
       } catch (e) {
         output = "Error";
       }
     } else if (input.contains("√")) {
       output = parseNumber(input).toString();
       input = output;
+      isResult = true;
     }
   } else {
     input += buttonText;
@@ -70,7 +73,8 @@ void buttonPressed(
     }
   }
 
-  setStateCallback(input, output, operand, previousNumber, currentNumber);
+  setStateCallback(
+      input, output, operand, previousNumber, currentNumber, isResult);
 }
 
 // Function to parse numbers, including square root handling
@@ -107,6 +111,10 @@ String calculateResult(
       result = previousNumber % currentNumber;
       break;
   }
-
-  return result.toString();
+  // Check if the result is a whole number
+  if (result % 1 == 0) {
+    return result.toInt().toString(); // Convert to integer if no decimal part
+  } else {
+    return result.toString(); // Keep as double otherwise
+  }
 }

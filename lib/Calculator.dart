@@ -1,5 +1,3 @@
-// This is Calculator.dart page
-
 import 'package:flutter/material.dart';
 import 'Functions.dart';
 import 'widgets/Colors.dart';
@@ -18,17 +16,19 @@ class _CalculatorState extends State<Calculator> {
   String _operand = "";
   double _currentNumber = 0.0;
   double _previousNumber = 0.0;
-  bool _showCalculatorText = true; // Add this variable
+  bool _showCalculatorText = true;
+  bool _isResultDisplayed = false; // Track if '=' is pressed
 
   void updateState(String input, String output, String operand,
-      double previousNumber, double currentNumber) {
+      double previousNumber, double currentNumber, bool isResult) {
     setState(() {
       _input = input;
       _output = output;
       _operand = operand;
       _previousNumber = previousNumber;
       _currentNumber = currentNumber;
-      _showCalculatorText = input.isEmpty; // Hide text if input is not empty
+      _showCalculatorText = input.isEmpty;
+      _isResultDisplayed = isResult; // Track result display state
     });
   }
 
@@ -48,8 +48,8 @@ class _CalculatorState extends State<Calculator> {
               child: Column(
                 children: [
                   AnimatedOpacity(
-                    opacity: _showCalculatorText ? 1.0 : 0.0, // Animate opacity
-                    duration: Duration(milliseconds: 180), // Animation speed
+                    opacity: _showCalculatorText ? 1.0 : 0.0,
+                    duration: Duration(milliseconds: 180),
                     child: Row(
                       children: [
                         Text(
@@ -64,21 +64,46 @@ class _CalculatorState extends State<Calculator> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(
-                        _input.isEmpty ? "0" : _input, // Show input numbers
-                        style: TextStyle(
-                            fontSize: screenWidth * 0.15, color: Colors.white),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          reverse: true,
+                          child: Text(
+                            _input.isEmpty ? "0" : _input,
+                            style: TextStyle(
+                              fontSize: _isResultDisplayed
+                                  ? screenWidth * 0.07
+                                  : screenWidth * 0.15,
+                              color: _isResultDisplayed
+                                  ? AppColors.myGray
+                                  : Colors.white,
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(
-                        _output,
-                        style: TextStyle(
-                            fontSize: screenWidth * 0.07,
-                            color: AppColors.myGray),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          reverse: true,
+                          child: Text(
+                            _output,
+                            style: TextStyle(
+                              fontSize: _isResultDisplayed
+                                  ? screenWidth * 0.12
+                                  : screenWidth * 0.07,
+                              color: _isResultDisplayed
+                                  ? Colors.white
+                                  : AppColors.myGray,
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -118,7 +143,7 @@ class _CalculatorState extends State<Calculator> {
               btnText: btnText,
               btnColor: btnText == "=" ? AppColors.mybtnColor2 : color,
               onTap: () => buttonPressed(btnText, updateState, _input, _output,
-                  _operand, _previousNumber, _currentNumber),
+                  _operand, _previousNumber, _currentNumber, btnText == "="),
             ),
           )
           .toList(),

@@ -1,3 +1,5 @@
+// This is CalculatorButton.dart page
+
 import 'package:flutter/material.dart';
 
 class CalculatorButton extends StatelessWidget {
@@ -14,12 +16,14 @@ class CalculatorButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth1 = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.all(8),
-        height: 70,
-        width: 70,
+        margin: EdgeInsets.all(8),
+        height: screenWidth1 * 0.17,
+        width: screenWidth1 * 0.17,
         decoration: BoxDecoration(
           color: btnColor ?? Colors.grey[800],
           borderRadius: BorderRadius.circular(100),
@@ -27,7 +31,8 @@ class CalculatorButton extends StatelessWidget {
         child: Center(
           child: Text(
             btnText,
-            style: const TextStyle(fontSize: 30, color: Colors.white),
+            style:
+                TextStyle(fontSize: screenWidth1 * 0.08, color: Colors.white),
           ),
         ),
       ),

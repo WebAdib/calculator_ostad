@@ -25,6 +25,30 @@ void buttonPressed(
   } else if (buttonText == "A") {
     if (input.isNotEmpty) {
       input = input.substring(0, input.length - 1);
+
+      // Check if the last character is an operator
+      if (input.isNotEmpty && "+–×÷%".contains(input[input.length - 1])) {
+        output = ""; // Don't show output if no number after operand
+      } else if (input.contains(RegExp(r'[+–×÷%]'))) {
+        try {
+          List<String> parts = input.split(RegExp(r'[+–×÷%]'));
+          previousNumber = parseNumber(parts[0]);
+
+          if (parts.length > 1 && parts[1].isNotEmpty) {
+            currentNumber = parseNumber(parts[1]);
+            operand =
+                input.replaceAll(RegExp(r'[\d.]'), ''); // Extract operator
+            output = calculateResult(operand, previousNumber, currentNumber);
+          } else {
+            output = ""; // If no second number, don't show output
+          }
+        } catch (e) {
+          output = "";
+        }
+      } else {
+        // If no operator, update output as the new number
+        output = input.isNotEmpty ? parseNumber(input).toString() : "0";
+      }
     }
   } else if (buttonText == "√") {
     if (input.isEmpty || "+–×÷%".contains(input[input.length - 1])) {
